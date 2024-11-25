@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Attendify</string>
+
+    <string name="next">Next</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet</string>
+    <string name="previous">Previous</string>
+    <string name="action_settings">Settings</string>
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+
+    <!-- Your existing strings -->
+
+    <!-- Sign In and Sign Out Button Text -->
+    <string name="sign_in_button">Sign In with Google</string>
+    <string name="sign_out_button">Sign Out</string>
+    <string name="profile_image">Profile Picture</string>
+    <!-- User Info -->
+    <string name="user_name">Name: %1$s</string>
+    <string name="user_email">Email: %1$s</string>
+    <string-array name="departments">
+        <item>Information Technology</item>
+        <item>Computer Science</item>
+        <item>Mechanical Engineering</item>
+        <item>Civil Engineering</item>
+        <item>Electrical Engineering</item>
+
+        <!-- Add other departments here -->
+    </string-array>
+    <string name="open_drawer">Open Navigation Drawer</string>
+    <string name="close_drawer">Close Navigation Drawer</string>
+
+    <string name="google_account">Log Out</string>
+    <string name="change_department">Change Academics</string>
+
+    <string name="about">About us</string>
+
+    <string name="aboutus">
+    Welcome to Attendify – your digital companion for seamless college management.\n\n
+
+    Attendify helps students stay connected and organized by providing a platform to manage academic details, schedules and more. Our goal is to simplify administrative tasks and enhance communication, making campus life more efficient and engaging.\n\n
+
+    <b>Key Features:</b>\n
+    - Update and manage academic information like department, semester, and more.\n
+    - Access your schedule and notifications in one place.\n
+    - Organize your Attendance for every subject.\n
+    - Stay informed about the low attendance criteria\n\n
+
+    We are committed to making your college experience smoother, smarter, and more enjoyable.\n\n
+    Done by:\n
+       <b> Mytreyan JP 2022115102\n
+        Kavya 2022115106\n\n</b>
+    <b>Stay tuned for more features and updates!</b>
+</string>
+
+
+    <string-array name="semesters">
+        <item> 1</item>
+        <item> 2</item>
+        <item> 3</item>
+        <item> 4</item>
+        <item> 5</item>
+        <item> 6</item>
+        <item> 7</item>
+        <item> 8</item>
+        <!-- Add other semesters here -->
+    </string-array>
+    <!-- Toast Messages -->
+    <string name="toast_sign_in_success">Signed in successfully!</string>
+    <string name="toast_sign_out_success">Signed out successfully!</string>
+    <string name="client_id">131644911442-tj9847g5cqllooklpglb3i07eaj5sjgc.apps.googleusercontent.com</string>
+</resources>

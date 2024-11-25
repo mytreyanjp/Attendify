@@ -1,0 +1,17 @@
+<resources>
+    <!-- Black and Gold Colors -->
+    <color name="primaryColor">#000A80</color> <!-- Black -->
+    <color name="primaryDarkColor">#2B2D30</color> <!-- Darker Black -->
+    <color name="accentColor">#6E2DFF</color> <!-- Gold -->
+    <color name="black">#000000</color>
+    <color name="grey">#303030</color><!-- Grey -->
+    <!-- Neutral Colors -->
+    <color name="backgroundColor">#7CBDFF</color> <!-- Dark background -->
+    <color name="textColor">#FFFFFF</color> <!-- White Text -->
+    <color name="textSecondaryColor">#BDBDBD</color> <!-- Light Grey Text -->
+
+    <!-- Button Colors -->
+    <color name="buttonColor">#90FFFFFF</color> <!-- Gold button -->
+    <color name="buttonTextColor">#2A35A4</color> <!-- Black text on button -->
+</resources>
+

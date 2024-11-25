@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Course Name and Details Container -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:backgroundTint="@color/buttonColor"
+
+        android:layout_height="wrap_content"
+        android:background="@drawable/course_border"> <!-- Apply the border here -->
+
+        <!-- Course Name -->
+        <TextView
+            android:id="@+id/courseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Course Name"
+            android:textColor="@color/buttonTextColor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true" />
+
+        <!-- Hours Missed -->
+        <TextView
+            android:id="@+id/hoursMissed"
+            android:layout_width="wrap_content"
+            android:textColor="@color/buttonTextColor"
+            android:layout_height="wrap_content"
+            android:text="Hours Missed: 0"
+            android:layout_below="@id/courseName"
+            android:layout_alignParentStart="true" />
+
+        <!-- Attendance -->
+        <TextView
+            android:id="@+id/attendance"
+            android:layout_width="wrap_content"
+            android:textColor="@color/buttonTextColor"
+            android:layout_height="wrap_content"
+            android:text="Attendance: 100%"
+            android:layout_below="@id/hoursMissed"
+            android:layout_alignParentStart="true" />
+
+        <!-- Skips Left -->
+        <TextView
+            android:id="@+id/skipsLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skips Left: 0"
+            android:textColor="@color/buttonTextColor"
+            android:layout_below="@id/attendance"
+            android:layout_alignParentStart="true" />
+
+        <!-- Buttons on the right side -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true">
+
+            <Button
+                android:id="@+id/incrementButton"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="+" />
+
+            <Button
+                android:id="@+id/decrementButton"
+                android:layout_width="70dp"
+                android:layout_marginLeft="8dp"
+                android:layout_height="wrap_content"
+                android:text="-" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

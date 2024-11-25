@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:background="#A9A9A9"
+        android:id="@+id/action_google_logout"
+        android:title="@string/google_account"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:titleTextColor="@android:color/black" /> <!-- Set text color to black -->
+
+    <item
+        android:background="#A9A9A9"
+        android:id="@+id/action_change_academics"
+        android:title="@string/change_department"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:titleTextColor="@android:color/black" /> <!-- Set text color to black -->
+
+    <item
+        android:background="#A9A9A9"
+        android:id="@+id/action_about"
+        android:title="@string/about"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:titleTextColor="@android:color/black" /> <!-- Set text color to black -->
+</menu>
