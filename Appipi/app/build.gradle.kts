@@ -34,10 +34,16 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packagingOptions {
+        exclude("META-INF/NOTICE.md")
+        exclude("META-INF/LICENSE.md")
+    }
 }
 
 dependencies {
-    implementation(libs.javaMail)
+
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -52,4 +58,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.play.services.auth)
     implementation(libs.activity.ktx)
+    implementation(libs.android.mail)
+    implementation(libs.android.activation)
+
 }

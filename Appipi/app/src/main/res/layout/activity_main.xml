@@ -115,6 +115,7 @@
             android:layout_below="@id/semesterSpinner"
             android:layout_marginTop="20dp"
             android:text="Submit"
+            android:textColor="@color/white"
             android:visibility="gone"/>
         <!-- Sign In Button -->
         <com.google.android.gms.common.SignInButton

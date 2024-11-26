@@ -1,7 +1,14 @@
 package com.example.appipi;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -13,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.location.Address;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,6 +31,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -36,24 +46,40 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import android.Manifest;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
     private Spinner departmentSpinner, semesterSpinner;
     private Button submitDataButton;
+    private int c=1;
     private String department, semester;
     private TextView userDetailsText, appname;
     private Toolbar toolbar;
     private LinearLayout courseLayout;
+    private LocationManager locationManager;
     private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // Check for location permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request location permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            // Permission is granted, start requesting location updates
+            startLocationUpdates();
+        }
 
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
@@ -127,6 +153,18 @@ public class MainActivity extends AppCompatActivity {
         // Assuming you have a Navigation Drawer layout
         // Set up the drawer and listener for navigation items (Google Account, Department, Semester, etc.)
     }
+    private void startLocationUpdates() {
+        try {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, // Use GPS provider
+                    1000,  // Minimum time interval between updates (1 second)
+                    10,    // Minimum distance between updates (10 meters)
+                    this   // Pass the LocationListener (current activity)
+            );
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
 //    private void handleUserSignedIn(FirebaseUser user) {
 //        // Hide Google Sign-In button
 //        findViewById(R.id.signIn).setVisibility(View.GONE);
@@ -170,23 +208,29 @@ public class MainActivity extends AppCompatActivity {
         MenuItem logout = menu.findItem(R.id.action_google_logout);
         MenuItem changeacademics = menu.findItem(R.id.action_change_academics);
         MenuItem about = menu.findItem(R.id.action_about);
+        MenuItem location = menu.findItem(R.id.action_location);
 
         // Optionally modify the menu items
         logout.setTitle("Logout");
         changeacademics.setTitle("Change Academics");
         about.setTitle("About");
+        location.setTitle("Location");
 
         SpannableString googleAccountTitle = new SpannableString("Logout");
-        googleAccountTitle.setSpan(new ForegroundColorSpan(Color.BLACK), 0, googleAccountTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        googleAccountTitle.setSpan(new ForegroundColorSpan(Color.WHITE), 0, googleAccountTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         logout.setTitle(googleAccountTitle);
 
         SpannableString changeAcademicsTitle = new SpannableString("Change Academics");
-        changeAcademicsTitle.setSpan(new ForegroundColorSpan(Color.BLACK), 0, changeAcademicsTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        changeAcademicsTitle.setSpan(new ForegroundColorSpan(Color.WHITE), 0, changeAcademicsTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         changeacademics.setTitle(changeAcademicsTitle);
 
         SpannableString aboutTitle = new SpannableString("About");
-        aboutTitle.setSpan(new ForegroundColorSpan(Color.BLACK), 0, aboutTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        aboutTitle.setSpan(new ForegroundColorSpan(Color.WHITE), 0, aboutTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         about.setTitle(aboutTitle);
+
+        SpannableString locationTitle = new SpannableString("Location");
+        locationTitle.setSpan(new ForegroundColorSpan(Color.WHITE), 0, aboutTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        location.setTitle(locationTitle);
 
         // Returning true indicates the menu has been successfully created
         return true;
@@ -229,7 +273,26 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
 
-        } else {
+        }
+        else if (item.getItemId() == R.id.action_location) {
+            // Handle Location action
+            Toast.makeText(this, "About You", Toast.LENGTH_SHORT).show();
+
+            // Retrieve the state and address from SharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences("location_data", MODE_PRIVATE);
+            String state = sharedPreferences.getString("state", "Unknown");
+            String address = sharedPreferences.getString("address", "Unknown");
+
+            // Create an Intent to pass data to AboutLocation activity
+            Intent intent = new Intent(this, AboutLocation.class);
+            intent.putExtra("state", state); // Pass state information
+            intent.putExtra("address", address); // Pass full address
+            startActivity(intent);
+
+            return true;
+        }
+
+        else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -365,6 +428,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // Declare a HashMap to keep track of whether the email has been sent for each course
+    private Map<String, Boolean> emailSentMap = new HashMap<>();
+
     private void addCourse(String courseName, String courseDetails) {
         // Create a new course layout by inflating the activity_course layout
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -404,10 +470,25 @@ public class MainActivity extends AppCompatActivity {
                 // Update attendance percentage dynamically
                 double attendancePercentage = ((totalHours - (currentHours + 1)) / (double) totalHours) * 100;
                 attendanceTextView.setText(String.format("Attendance: %.2f%%", attendancePercentage));
-                //checkAttendanceAndSendEmail(attendancePercentage);
-            }
 
+                // Check if attendance is below 75% and email has not been sent for this course yet
+                if (attendancePercentage < 75 && !emailSentMap.containsKey(courseName)) {
+                    // Call the email sending function
+                    String toEmail = username; // student's email address
+                    Toast.makeText(MainActivity.this, "Your Attendance is below 75% in "+courseName, Toast.LENGTH_SHORT).show();
+
+                    // Mark that the email has been sent for this course
+                    emailSentMap.put(courseName, true);
+
+                    // Send the email
+                    String subject = "Low Attendance Alert";
+                    String body = "Dear Student,\n\nYour attendance percentage is below 75% in "+courseName+". Please make sure to attend your classes regularly.\n\nBest Regards,\nAttendify";
+                    sendEmail(toEmail, subject, body);
+                    Toast.makeText(MainActivity.this, "Low attendance email sent.", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
+
 
         decrementButton.setOnClickListener(v -> {
             int currentHours = Integer.parseInt(hoursMissedTextView.getText().toString().split(": ")[1]);
@@ -432,18 +513,7 @@ public class MainActivity extends AppCompatActivity {
         courseContainer.addView(courseView);
     }
 
-    private void checkAttendanceAndSendEmail(double attendancePercentage) {
-        if (attendancePercentage < 75) {
-            // Call the email sending function
-            String toEmail = username; // student's email address
-            Toast.makeText(MainActivity.this, "Function :) "+toEmail, Toast.LENGTH_SHORT).show();
 
-            String subject = "Low Attendance Alert";
-            String body = "Dear Student,\n\nYour attendance percentage is below 75%. Please make sure to attend your classes regularly.\n\nBest Regards,\nAttendify";
-            sendEmail(toEmail, subject, body);
-            Toast.makeText(MainActivity.this, "Low attendance email sent.", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
     // Function to get total hours based on course type
@@ -466,17 +536,101 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendEmail(String recipientEmail, String subject, String message) {
 
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-        emailIntent.setData(Uri.parse("mailto:"));
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{recipientEmail});
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+        // Run email sending in a background thread
+        new Thread(() -> {
+            try {
+                // Sender's email and password should be securely managed, not hardcoded
+                String senderEmail = "jpmytreyan@gmail.com"; // Secure this
+                String senderPassword = "hmrt noql mgvl objf";    // Secure this
+
+                // Call the EmailSender to send email
+                EmailSender.sendEmail(senderEmail, senderPassword, recipientEmail, subject, message);
+                Log.d("Email", "Email sent successfully!");
+            } catch (Exception e) {
+                // Handle any exceptions that occur during email sending
+                Log.e("Email", "Failed to send email", e);
+            }
+        }).start();
+    }
+
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        // Called when the location changes
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
 
         try {
-            startActivity(Intent.createChooser(emailIntent, "Send Email"));
-        } catch (android.content.ActivityNotFoundException ex) {
-            System.out.println("No email app found.");
+            Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+
+                // Get the state (admin area) from the address
+                String state = address.getAdminArea();
+                String fullAddress = address.getAddressLine(0);
+
+                // Save address and state to SharedPreferences or a class variable
+                SharedPreferences sharedPreferences = getSharedPreferences("location_data", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("state", state);
+                editor.putString("address", fullAddress);
+                editor.apply();
+
+            } else {
+                Toast.makeText(this, "Unable to retrieve address", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+
+    @Override
+    public void onLocationChanged(@NonNull List<Location> locations) {
+        LocationListener.super.onLocationChanged(locations);
+    }
+
+    @Override
+    public void onFlushComplete(int requestCode) {
+        LocationListener.super.onFlushComplete(requestCode);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        LocationListener.super.onStatusChanged(provider, status, extras);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+        LocationListener.super.onProviderEnabled(provider);
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        LocationListener.super.onProviderDisabled(provider);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, start requesting location updates
+                startLocationUpdates();
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Permission denied, cannot access location", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Stop receiving location updates when the activity is paused
+        locationManager.removeUpdates(this);
+    }
 }

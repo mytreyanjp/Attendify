@@ -15,10 +15,14 @@ playServicesAuth = "21.2.0"
 firebaseFirestore = "25.1.1"
 activity-ktx = "1.5.0"
 firebaseMessaging = "24.1.0"
-javaMail = "1.6.2"
+google_play_services = "18.0.0"
+
 
 [libraries]
-javaMail = { module = "com.sun.mail:javax.mail", version.ref = "javaMail" }
+
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "google_play_services" }
+android-mail = "com.sun.mail:android-mail:1.6.6"
+android-activation = "com.sun.mail:android-activation:1.6.6"
 activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity-ktx" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }

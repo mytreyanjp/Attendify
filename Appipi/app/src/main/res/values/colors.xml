@@ -11,7 +11,8 @@
     <color name="textSecondaryColor">#BDBDBD</color> <!-- Light Grey Text -->
 
     <!-- Button Colors -->
-    <color name="buttonColor">#90FFFFFF</color> <!-- Gold button -->
+    <color name="buttonColor">#90FFFFFF</color>
+    <color name="white">#ffffff</color><!-- Gold button -->
     <color name="buttonTextColor">#2A35A4</color> <!-- Black text on button -->
 </resources>
 
