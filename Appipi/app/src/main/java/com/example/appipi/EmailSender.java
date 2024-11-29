@@ -14,7 +14,7 @@ public class EmailSender {
     public static void sendEmail(final String senderEmail, final String senderPassword,
                                  final String recipientEmail, final String subject,
                                  final String body) {
-        // Configure properties
+        // Configure properties+
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");

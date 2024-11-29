@@ -1,11 +1,14 @@
 package com.example.appipi;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Geocoder;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -50,6 +53,8 @@ import android.Manifest;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -102,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // Initialize GoogleSignInClient
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
+
+
+
         // Initialize Views
         departmentSpinner = findViewById(R.id.departmentSpinner);
         semesterSpinner = findViewById(R.id.semesterSpinner);
@@ -109,6 +117,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         courseLayout=findViewById(R.id.courseDetailsLayout);
         appname=findViewById(R.id.app_name_text);
 
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(appname, "translationX", -1000f, 0f);
+        slideIn.setDuration(2000);
+        slideIn.start();
+
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+        appname.startAnimation(fadeInAnimation);
         // Hide some views initially
         findViewById(R.id.departmentLabel).setVisibility(View.GONE);
         findViewById(R.id.semesterLabel).setVisibility(View.GONE);
@@ -259,10 +273,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             courseLayout.setVisibility(View.GONE);
             departmentSpinner.setVisibility(View.VISIBLE);
             semesterSpinner.setVisibility(View.VISIBLE);
+            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(semesterSpinner, "alpha", 0f, 1f);
+            fadeIn.setDuration(2000);
+            fadeIn.start();
+            ObjectAnimator fadeInn = ObjectAnimator.ofFloat(departmentSpinner, "alpha", 0f, 1f);
+            fadeInn.setDuration(2000);
+            fadeInn.start();
+
 
             findViewById(R.id.departmentLabel).setVisibility(View.VISIBLE);
             findViewById(R.id.semesterLabel).setVisibility(View.VISIBLE);
             submitDataButton.setVisibility(View.VISIBLE);
+
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(submitDataButton, "scaleX", 1f, 1.1f, 1f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(submitDataButton, "scaleY", 1f, 1.1f, 1f);
+            scaleX.setDuration(1000);
+            scaleY.setDuration(1000);
+            scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+            scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+            scaleX.start();
+            scaleY.start();
+
 
             return true;
 
@@ -280,8 +311,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             // Retrieve the state and address from SharedPreferences
             SharedPreferences sharedPreferences = getSharedPreferences("location_data", MODE_PRIVATE);
-            String state = sharedPreferences.getString("state", "Unknown");
-            String address = sharedPreferences.getString("address", "Unknown");
+            String state = sharedPreferences.getString("state", "tamil nadu");
+            String address = sharedPreferences.getString("address", "Chennai, Tamil Nadu, India");
 
             // Create an Intent to pass data to AboutLocation activity
             Intent intent = new Intent(this, AboutLocation.class);
@@ -318,9 +349,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                             departmentSpinner.setVisibility(View.VISIBLE);
                             semesterSpinner.setVisibility(View.VISIBLE);
+
                             findViewById(R.id.departmentLabel).setVisibility(View.VISIBLE);
                             findViewById(R.id.semesterLabel).setVisibility(View.VISIBLE);
                             submitDataButton.setVisibility(View.VISIBLE);
+
+                            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(semesterSpinner, "alpha", 0f, 1f);
+                            fadeIn.setDuration(1000);
+                            fadeIn.start();
+                            ObjectAnimator fadeInn = ObjectAnimator.ofFloat(departmentSpinner, "alpha", 0f, 1f);
+                            fadeInn.setDuration(1000);
+                            fadeInn.start();
+
+
+                            ObjectAnimator scaleX = ObjectAnimator.ofFloat(submitDataButton, "scaleX", 1f, 1.1f, 1f);
+                            ObjectAnimator scaleY = ObjectAnimator.ofFloat(submitDataButton, "scaleY", 1f, 1.1f, 1f);
+                            scaleX.setDuration(1000);
+                            scaleY.setDuration(1000);
+                            scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                            scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                            scaleX.start();
+                            scaleY.start();
+
 
                         }
                     } else {
